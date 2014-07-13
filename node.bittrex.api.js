@@ -1,5 +1,5 @@
 /* ============================================================
- * node.bittrex.api v0.1.0
+ * node.bittrex.api v0.1.2
  * https://github.com/n0mad01/node.bittrex.api
  *
  * ============================================================
@@ -12,11 +12,11 @@ var request = require("request"),
 
 var NodeBittrexApi = function() {
 
-	var self = this;
+    var self = this;
     var deferred = q.defer();
     var verbose = false;
     var baseUrl = 'https://bittrex.com/api/v1';
-	var request_options = {
+    var request_options = {
 		method  : 'GET',
 		headers : {
 			"User-Agent": "Mozilla/4.0 (compatible; Bittrex API node client)",
@@ -30,7 +30,6 @@ var NodeBittrexApi = function() {
     var end;
     var JSONStream = null;
     var es = null;
-
 
     var getNonce = function() {
         return new Date().getTime();
@@ -139,7 +138,6 @@ var NodeBittrexApi = function() {
 
         return deferred.promise;
     };
-
 
     return {
 

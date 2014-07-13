@@ -1,35 +1,37 @@
 {
-    "name": "node.bittrex.api",
-    "version": "0.1.2",
-    "description": "Node Bittrex API - asynchronous node.js library for the Bittrex ( https://bittrex.com/ ) API.",
-    "keywords": [
+  "name": "node.bittrex.api",
+  "version": "0.1.2",
+  "description": "Node Bittrex API - asynchronous node.js library for the Bittrex ( https://bittrex.com/ ) API.",
+  "keywords": [
     "btc",
     "xbt",
     "bitcoin",
     "altcoin",
     "bittrex"
-    ],
-    "author": "Adrian Soluch ( https://github.com/n0mad01 )",
-    "contributors": [
-    ],
-    "license": "MIT",
-    "dependencies": {
-        "q" : ">= 1.0.1",
-        "request" : ">= 2.35.0",
-        "JSONStream" : ">= 0.8.4",
-        "event-stream" : ">= 3.1.5"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/n0mad01/node.bittrex.api"
-    },
-    "main": "node.bittrex.api.js",
-    "engines": {
-        "node": ">=0.10"
-    },
-    "bugs": {
-        "url": "https://github.com/n0mad01/node.bittrex.api/issues",
-        "email": "adrian.soluch@gmail.com"
-    },
-    "readmeFilename": "README.md"
+  ],
+  "author": "Adrian Soluch ( https://github.com/n0mad01 )",
+  "contributors": [],
+  "license": "MIT",
+  "dependencies": {
+    "q": ">= 1.0.1",
+    "request": ">= 2.35.0",
+    "JSONStream": ">= 0.8.4",
+    "event-stream": ">= 3.1.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/n0mad01/node.bittrex.api"
+  },
+  "main": "node.bittrex.api.js",
+  "engines": {
+    "node": ">=0.10"
+  },
+  "bugs": {
+    "url": "https://github.com/n0mad01/node.bittrex.api/issues",
+    "email": "adrian.soluch@gmail.com"
+  },
+  "homepage": "https://github.com/n0mad01/node.bittrex.api",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }
