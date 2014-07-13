@@ -1,13 +1,19 @@
 node.bittrex.api
 =========
 
-Node Bittrex API is an asynchronous node.js library for the Bittrex ( https://bittrex.com/ ) API.
+Node Bittrex API is an asynchronous node.js library for the Bittrex API - https://bittrex.com/.
 The Bittrex API data can be received either as a GET request or a Stream.
 
 Documentation to the Bittrex API: https://bittrex.com/Home/Api
 
 Installation
 ----
+##### install it most convenient via npm:
+```sh
+$ npm install node.bittrex.api
+```
+
+### or
 
 fetch the project via git:
 ```sh
