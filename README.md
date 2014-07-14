@@ -1,4 +1,4 @@
-node.bittrex.api
+Node Bittrex API
 =========
 
 Node Bittrex API is an asynchronous node.js library for the Bittrex API - https://bittrex.com/.
@@ -52,7 +52,6 @@ example:
 
 ```javascript
 bittrex.getmarketsummaries( function( data ) {
-
     for( var i in data.result ) {
         bittrex.getticker( { market : data.result[i].MarketName }, function( ticker ) {
             console.log( ticker );
@@ -82,13 +81,15 @@ Other libraries utilized:
 Methods
 ----
 
+Optional parameters may have to be looked up at https://bittrex.com/Home/Api.
+
 Not all Bittrex API methods are implemented yet (and may never be), also some could have been forgotten in the documentation ( therefore i recomend you to consult the class code ).
 > Nonetheless the method **sendCustomRequest** enables completely custom requests anyway.
 
 ##### sendCustomRequest
 ```javascript
-var url = 'https://bittrex.com/api/v1/public/getticker?market=BTC-LTC';
-bittrex.sendCustomRequest( url, function( data ) {
+var uri = 'https://bittrex.com/api/v1/public/getticker?market=BTC-LTC';
+bittrex.sendCustomRequest( uri, function( data ) {
     console.log( data );
 });
 ```
@@ -149,6 +150,6 @@ bittrex.getbalance( { currency : 'BTC' }, function( data ) {
 ```
 
 ##### donations are welcome! 
-BTC: 
+BTC
 > 1N5T2VYACYKxK3UUDHhp7g69qtUmsDdAjZ
 
