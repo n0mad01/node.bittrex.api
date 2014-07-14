@@ -16,20 +16,20 @@ var NodeBittrexApi = function() {
     var deferred = q.defer();
     var verbose = false;
     var baseUrl = 'https://bittrex.com/api/v1';
-    var request_options = {
-		method  : 'GET',
-		headers : {
-			"User-Agent": "Mozilla/4.0 (compatible; Bittrex API node client)",
-			"Content-type": "application/x-www-form-urlencoded"
-		},
-		agent   : false
-	};
-    var returnCleartext = false;
+    var cleartext = false;
     var stream = false;
     var start;
     var end;
     var JSONStream = null;
     var es = null;
+    var request_options = {
+		method  : 'GET',
+		headers : {
+			"User-Agent": "Mozilla/4.0 (compatible; Node Bittrex API)",
+			"Content-type": "application/x-www-form-urlencoded"
+		},
+		agent   : false
+	};
 
     var getNonce = function() {
         return new Date().getTime();
@@ -53,19 +53,11 @@ var NodeBittrexApi = function() {
 
             switch( key ) {
 
-                case 'apikey' : 
-                    self.apiKey = options[key];
-                break;
-                case 'stream' : 
-                    switchStream( options[key] );
-                break;
-                case 'verbose' : 
-                    self.verbose = options[key];
-                break;
-                case 'cleartext' : 
-                    self.returnCleartext = options[key];
-                break;
-                break;
+                case 'apikey' : self[key] = options[key]; break;
+                case 'stream' : switchStream( options[key] ); break;
+                case 'verbose' : self[key] = options[key]; break;
+                case 'cleartext' : self[key] = options[key]; break;
+                case 'baseUrl' : self[key] = options[key]; break;
             }
         }
     };
@@ -105,18 +97,18 @@ var NodeBittrexApi = function() {
 
             case true : 
                 request({ url : request_options.uri })
-                    .pipe( JSONStream.parse())
+                    .pipe( JSONStream.parse() )
                     .pipe( es.mapSync( function( data ) {
                         callback( data );
                         ( ( self.verbose ) 
-                            ? console.log( "Streamed in: %ds", ( Date.now() - start ) / 1000 ) : '' );
+                            ? console.log( "streamed from "+ request_options.uri +" in: %ds", ( Date.now() - start ) / 1000 ) : '' );
                     }));
                 break;
             case false : 
                 sendRequest().then( function( data ) {
-                    callback( ( ( self.returnCleartext ) ? data : JSON.parse( data ) ) );
+                    callback( ( ( self.cleartext ) ? data : JSON.parse( data ) ) );
                     ( ( self.verbose ) 
-                        ? console.log( "Time taken: %ds", ( Date.now() - start ) / 1000 ) : '' );
+                        ? console.log( "requested from "+ request_options.uri +" in: %ds", ( Date.now() - start ) / 1000 ) : '' );
                 });
                 break;
             default :
@@ -128,12 +120,12 @@ var NodeBittrexApi = function() {
 
         request( request_options, function( error, result, body ) {
 
-			if( ! body || ! result || result.statusCode != 200 ) {
+            if( ! body || ! result || result.statusCode != 200 ) {
                 deferred.reject( new Error( error ) );
-			}
-			else {
+            }
+            else {
                 deferred.resolve( body );
-			}
+            }
         });
 
         return deferred.promise;
