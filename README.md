@@ -8,12 +8,12 @@ Documentation to the Bittrex API: https://bittrex.com/Home/Api
 
 Installation
 ----
-##### install it most convenient via npm:
+install it most convenient via npm:
 ```sh
 $ npm install node.bittrex.api
 ```
 
-### or
+##### or
 
 fetch the project via git:
 ```sh
@@ -36,13 +36,13 @@ var bittrex = require('./node.bittrex.api.js');
 ##### configure
 ```javascript
 bittrex.options({
-    'apikey' : APIKEY,
+    'apikey' : API_KEY,
     'stream' : true,
     'verbose' : true
 });
 ```
 
-By default the returned data is an object, in order to get clear text you have to add the option 'cleartext':
+By default the returned data is an object, in order to get clear text you have to add the option **cleartext**:
 ```javascript
 'cleartext' : true
 ```
@@ -69,20 +69,20 @@ To activate Streaming simply add to your options:
 ```
 
 Streaming depends on the following npm packages:
-- JSONStream
-- event-stream
+- JSONStream https://www.npmjs.org/package/JSONStream
+- event-stream https://www.npmjs.org/package/event-stream
 
 Other
 --
 
 Other libraries utilized:
-- request
-- q
+- request https://www.npmjs.org/package/request
+- q https://www.npmjs.org/package/q
 
 Methods
 ----
 
-Not all Bittrex API methods are implemented yet (and may never be), also some could have been forgotten in the documentation ( therefore i reccomend you to consult the code ).
+Not all Bittrex API methods are implemented yet (and may never be), also some could have been forgotten in the documentation ( therefore i recomend you to consult the class code ).
 > Nonetheless the method **sendCustomRequest** enables completely custom requests anyway.
 
 ##### sendCustomRequest
