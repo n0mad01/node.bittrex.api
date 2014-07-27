@@ -18,8 +18,7 @@ var NodeBittrexApi = function() {
         JSONStream = require( 'JSONStream' ),
         es = require( 'event-stream' );
 
-    var self = this,
-        deferred = q.defer(),
+    var deferred = q.defer(),
         start,
         end,
         request_options = {
@@ -140,9 +139,9 @@ var NodeBittrexApi = function() {
         options : function( options ) {
             extractOptions( options );
         },
-        sendCustomRequest : function( request_string, callback ) {
+        sendCustomRequest : function( request_string, callback, credentials ) {
 
-            request_options.uri = request_string;
+            request_options.uri = ( ( credentials === true ) ? apiCredentials( request_string ) : request_string );
             sendRequestCallback( callback );
         },
         getmarkets : function( callback ) {
@@ -182,7 +181,7 @@ var NodeBittrexApi = function() {
         },
         getbalance : function( options, callback ) {
 
-            request_options.uri = setRequestUriGetParams( apiCredentials( opts.baseUrl +'/account/getbalances' ), options ); 
+            request_options.uri = setRequestUriGetParams( apiCredentials( opts.baseUrl +'/account/getbalance' ), options ); 
             sendRequestCallback( callback );
         },
         getwithdrawalhistory : function( options, callback ) {

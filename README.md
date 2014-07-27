@@ -49,9 +49,13 @@ By default the returned data is an object, in order to get clear text you have t
 'cleartext' : true
 ```
 
-now you can use the object right away.
-example:
+The baseUrl itself can also be set via options
+```javascript
+'baseUrl' : 'https://bittrex.com/api/v1'
+```
 
+After configuration you can use the object right away:
+example #1
 ```javascript
 bittrex.getmarketsummaries( function( data ) {
     for( var i in data.result ) {
@@ -61,6 +65,13 @@ bittrex.getmarketsummaries( function( data ) {
     }
 });
 ```
+example #2
+```javascript
+bittrex.getbalance({ currency : 'BTC' }, function( data ) {
+    console.log( data );
+});
+```
+
 
 Streams
 --
@@ -91,13 +102,25 @@ Optional parameters may have to be looked up at https://bittrex.com/Home/Api.
 Not all Bittrex API methods are implemented yet (and may never be), also some could have been forgotten in the documentation ( therefore i recomend you to consult the class code ).
 > Nonetheless the method **sendCustomRequest** enables completely custom requests anyway.
 
-##### sendCustomRequest
+##### sendCustomRequest 
+- url           String
+- callback      Function
+- credentials   Boolean     optional    whether the credentials should be added to the url or not, default is set to false.
+example #1
 ```javascript
 var url = 'https://bittrex.com/api/v1.1/public/getticker?market=BTC-LTC';
 bittrex.sendCustomRequest( uri, function( data ) {
     console.log( data );
 });
 ```
+
+example #2 (credentials added to request/stream)
+```javascript
+bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/account/getbalances?currency=BTC', function( data ) {
+    console.log( data );
+}, true );
+```
+
 ##### getticker
 ```javascript
 bittrex.getticker( { market : 'BTC-LTC' }, function( data ) {
@@ -114,7 +137,7 @@ bittrex.getbalances( function( data ) {
 
 ##### getmarkethistory
 ```javascript
-bittrex.getmarkethistory( { market : 'BTC-LTC', count : 3 }, function( data ) {
+bittrex.getmarkethistory({ market : 'BTC-LTC', count : 3 }, function( data ) {
     console.log( data );
 });
 ```
@@ -128,28 +151,28 @@ bittrex.getmarketsummaries( function( data ) {
 
 ##### getorderbook
 ```javascript
-bittrex.getorderbook( { market : 'BTC-LTC', depth : 10, type : 'both' }, function( data ) {
+bittrex.getorderbook({ market : 'BTC-LTC', depth : 10, type : 'both' }, function( data ) {
     console.log( data );
 });
 ```
 
 ##### getwithdrawalhistory
 ```javascript
-bittrex.getwithdrawalhistory( { currency : 'BTC', count : 1 }, function( data ) {
+bittrex.getwithdrawalhistory({ currency : 'BTC', count : 1 }, function( data ) {
     console.log( data );
 });
 ```
 
 ##### getdepositaddress
 ```javascript
-bittrex.getdepositaddress( { currency : 'BTC' }, function( data ) {
+bittrex.getdepositaddress({ currency : 'BTC' }, function( data ) {
     console.log( data );
 });
 ```
 
 ##### getbalance
 ```javascript
-bittrex.getbalance( { currency : 'BTC' }, function( data ) {
+bittrex.getbalance({ currency : 'BTC' }, function( data ) {
     console.log( data );
 });
 ```
