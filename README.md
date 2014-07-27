@@ -155,6 +155,8 @@ bittrex.getbalance( { currency : 'BTC' }, function( data ) {
 ```
 
 ##### donations very welcome! 
-BTC
-> 1N5T2VYACYKxK3UUDHhp7g69qtUmsDdAjZ
+> BTC
+```bash
+1N5T2VYACYKxK3UUDHhp7g69qtUmsDdAjZ
+```
 

@@ -1,5 +1,5 @@
 /* ============================================================
- * node.bittrex.api v0.1.2
+ * node.bittrex.api v0.1.4
  * https://github.com/n0mad01/node.bittrex.api
  *
  * ============================================================
@@ -8,46 +8,38 @@
  * ============================================================ */
 
 
-var request = require( 'request' ),
-    q = require( 'q' ),
-    hmac_sha512 = require( './hmac-sha512.js' );
-
 var NodeBittrexApi = function() {
 
-    var self = this;
-    var deferred = q.defer();
-    var verbose = false;
-    var baseUrl = 'https://bittrex.com/api/v1.1';
-    var cleartext = false;
-    var stream = false;
-    var start;
-    var end;
-    var JSONStream = null;
-    var es = null;
-    var request_options = {
-		method  : 'GET',
-		agent   : false,
-		headers : {
-			"User-Agent" : "Mozilla/4.0 (compatible; Node Bittrex API)",
-			"Content-type" : "application/x-www-form-urlencoded"
-		}
-	};
+    var request = require( 'request' ),
+        q = require( 'q' ),
+        hmac_sha512 = require( './hmac-sha512.js' ),
+        JSONStream = require( 'JSONStream' ),
+        es = require( 'event-stream' );
 
-    var getNonce = function() {
-        //return new Date().getTime();
-        return Math.floor( new Date().getTime() / 1000 );
+    var self = this,
+        deferred = q.defer(),
+        baseUrl = 'https://bittrex.com/api/v1.1',
+        start,
+        end,
+        request_options = {
+		    method  : 'GET',
+		    agent   : false,
+		    headers : {
+		    	"User-Agent" : "Mozilla/4.0 (compatible; Node Bittrex API)",
+		    	"Content-type" : "application/x-www-form-urlencoded"
+		    }
+	    };
+
+    this.options = {
+        apikey : 'APIKEY',
+        apisecret : 'APISECRET',
+        verbose : false,
+        cleartext : false,
+        stream : false 
     };
 
-    var switchStream = function( state ) {
-
-        if( state === true ) {
-            JSONStream = require('JSONStream');
-            es = require('event-stream');
-            stream = true;
-        }
-        else {
-            stream = false;
-        }
+    var getNonce = function() {
+        return Math.floor( new Date().getTime() / 1000 );
     };
 
     var extractOptions = function( options ) {
@@ -58,9 +50,9 @@ var NodeBittrexApi = function() {
 
                 case 'apikey' : self[key] = options[key]; break;
                 case 'apisecret' : self[key] = options[key]; break;
-                case 'stream' : switchStream( options[key] ); break;
-                case 'verbose' : self[key] = options[key]; break;
-                case 'cleartext' : self[key] = options[key]; break;
+                case 'stream' : self.options[key] = options[key]; break;
+                case 'verbose' : self.options[key] = options[key]; break;
+                case 'cleartext' : self.options[key] = options[key]; break;
                 case 'baseUrl' : self[key] = options[key]; break;
             }
         }
@@ -81,7 +73,7 @@ var NodeBittrexApi = function() {
         for( key in options ) {
             uri = updateQueryStringParameter( uri, key, options[key] );
         }
-        request_options.headers.apisign = hmac_sha512.HmacSHA512( uri, self.apisecret );
+        request_options.headers.apisign = hmac_sha512.HmacSHA512( uri, self.apisecret ); // setting the HMAC hash `apisign` http header
 
         return uri;
     };
@@ -93,6 +85,7 @@ var NodeBittrexApi = function() {
 
         if( uri.match( re ) ) { uri = uri.replace( re, '$1' + key + "=" + value + '$2' ); }
         else { uri = uri + separator + key + "=" + value; }
+
         return uri;
     }
 
@@ -100,14 +93,14 @@ var NodeBittrexApi = function() {
 
         start = Date.now();
 
-        switch( stream ) {
+        switch( self.options.stream ) {
 
             case true : 
                 request( request_options )
                     .pipe( JSONStream.parse() )
                     .pipe( es.mapSync( function( data ) {
                         callback( data );
-                        ( ( self.verbose ) 
+                        ( ( self.options.verbose ) 
                             ? console.log( "streamed from "+ request_options.uri +" in: %ds", ( Date.now() - start ) / 1000 ) : '' );
                     }));
                 break;
@@ -115,8 +108,8 @@ var NodeBittrexApi = function() {
                 sendRequest()
                 .then( function( data ) {
                     
-                    callback( ( ( self.cleartext ) ? data : JSON.parse( data ) ) );
-                    ( ( self.verbose ) 
+                    callback( ( ( self.options.cleartext ) ? data : JSON.parse( data ) ) );
+                    ( ( self.options.verbose ) 
                         ? console.log( "requested from "+ request_options.uri +" in: %ds", ( Date.now() - start ) / 1000 ) : '' );
                 })
                 .catch( function( error ) {
@@ -151,7 +144,6 @@ var NodeBittrexApi = function() {
         },
         sendCustomRequest : function( request_string, callback ) {
 
-            //request_options.uri = setRequestUriGetParams( request_string ); 
             request_options.uri = request_string;
             sendRequestCallback( callback );
         },
