@@ -7,15 +7,17 @@
  * Released under the MIT License 
  * ============================================================ */
 
-var request = require("request"),
-    q = require('q');
+
+var request = require( 'request' ),
+    q = require( 'q' ),
+    hmac_sha512 = require( './hmac-sha512.js' );
 
 var NodeBittrexApi = function() {
 
     var self = this;
     var deferred = q.defer();
     var verbose = false;
-    var baseUrl = 'https://bittrex.com/api/v1';
+    var baseUrl = 'https://bittrex.com/api/v1.1';
     var cleartext = false;
     var stream = false;
     var start;
@@ -24,15 +26,16 @@ var NodeBittrexApi = function() {
     var es = null;
     var request_options = {
 		method  : 'GET',
+		agent   : false,
 		headers : {
-			"User-Agent": "Mozilla/4.0 (compatible; Node Bittrex API)",
-			"Content-type": "application/x-www-form-urlencoded"
-		},
-		agent   : false
+			"User-Agent" : "Mozilla/4.0 (compatible; Node Bittrex API)",
+			"Content-type" : "application/x-www-form-urlencoded"
+		}
 	};
 
     var getNonce = function() {
-        return new Date().getTime();
+        //return new Date().getTime();
+        return Math.floor( new Date().getTime() / 1000 );
     };
 
     var switchStream = function( state ) {
@@ -54,6 +57,7 @@ var NodeBittrexApi = function() {
             switch( key ) {
 
                 case 'apikey' : self[key] = options[key]; break;
+                case 'apisecret' : self[key] = options[key]; break;
                 case 'stream' : switchStream( options[key] ); break;
                 case 'verbose' : self[key] = options[key]; break;
                 case 'cleartext' : self[key] = options[key]; break;
@@ -65,9 +69,10 @@ var NodeBittrexApi = function() {
     var apiCredentials = function( uri ) {
 
         var options = {
-            apikey  : self.apiKey,
+            apikey  : self.apikey,
             nonce   : getNonce()
         };
+
         return setRequestUriGetParams( uri, options ); 
     };
 
@@ -76,6 +81,8 @@ var NodeBittrexApi = function() {
         for( key in options ) {
             uri = updateQueryStringParameter( uri, key, options[key] );
         }
+        request_options.headers.apisign = hmac_sha512.HmacSHA512( uri, self.apisecret );
+
         return uri;
     };
 
@@ -96,7 +103,7 @@ var NodeBittrexApi = function() {
         switch( stream ) {
 
             case true : 
-                request({ url : request_options.uri })
+                request( request_options )
                     .pipe( JSONStream.parse() )
                     .pipe( es.mapSync( function( data ) {
                         callback( data );
@@ -105,11 +112,17 @@ var NodeBittrexApi = function() {
                     }));
                 break;
             case false : 
-                sendRequest().then( function( data ) {
+                sendRequest()
+                .then( function( data ) {
+                    
                     callback( ( ( self.cleartext ) ? data : JSON.parse( data ) ) );
                     ( ( self.verbose ) 
                         ? console.log( "requested from "+ request_options.uri +" in: %ds", ( Date.now() - start ) / 1000 ) : '' );
-                });
+                })
+                .catch( function( error ) {
+                    console.error( error );
+                })
+                .done();
                 break;
             default :
                 break;
@@ -119,7 +132,7 @@ var NodeBittrexApi = function() {
     var sendRequest = function() {
 
         request( request_options, function( error, result, body ) {
-
+            
             if( ! body || ! result || result.statusCode != 200 ) {
                 deferred.reject( new Error( error ) );
             }
@@ -138,6 +151,7 @@ var NodeBittrexApi = function() {
         },
         sendCustomRequest : function( request_string, callback ) {
 
+            //request_options.uri = setRequestUriGetParams( request_string ); 
             request_options.uri = request_string;
             sendRequestCallback( callback );
         },
