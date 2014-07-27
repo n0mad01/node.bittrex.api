@@ -80,6 +80,9 @@ Other libraries utilized:
 - request https://www.npmjs.org/package/request
 - q https://www.npmjs.org/package/q
 
+For HmacSHA512 this package is using a part of Crypto.js from google because the node crpyt package could not provide any appropriate result.
+- http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha512.js
+
 Methods
 ----
 
