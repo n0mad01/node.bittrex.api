@@ -54,6 +54,19 @@ The baseUrl itself can also be set via options
 'baseUrl' : 'https://bittrex.com/api/v1'
 ```
 
+Streams
+--
+To activate Streaming simply add to your options:
+```javascript
+'stream' : true
+```
+
+Streaming depends on the following npm packages:
+- JSONStream https://www.npmjs.org/package/JSONStream
+- event-stream https://www.npmjs.org/package/event-stream
+
+Examples
+--
 After configuration you can use the object right away:
 example #1
 ```javascript
@@ -72,17 +85,6 @@ bittrex.getbalance({ currency : 'BTC' }, function( data ) {
 });
 ```
 
-
-Streams
---
-To activate Streaming simply add to your options:
-```javascript
-'stream' : true
-```
-
-Streaming depends on the following npm packages:
-- JSONStream https://www.npmjs.org/package/JSONStream
-- event-stream https://www.npmjs.org/package/event-stream
 
 Other
 --
