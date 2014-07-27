@@ -37,12 +37,14 @@ var bittrex = require('./node.bittrex.api.js');
 ```javascript
 bittrex.options({
     'apikey' : API_KEY,
+    'apisecret' : API_SECRET, 
     'stream' : true,
-    'verbose' : true
+    'verbose' : true,
+    'cleartext' : false 
 });
 ```
 
-By default the returned data is an object, in order to get clear text you have to add the option **cleartext**:
+By default the returned data is an object, in order to get clear text you have to add the option **cleartext** (streams will always return objects):
 ```javascript
 'cleartext' : true
 ```
@@ -149,7 +151,7 @@ bittrex.getbalance( { currency : 'BTC' }, function( data ) {
 });
 ```
 
-##### donations are welcome! 
+##### donations very welcome! 
 BTC
 > 1N5T2VYACYKxK3UUDHhp7g69qtUmsDdAjZ
 
