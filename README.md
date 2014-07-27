@@ -107,7 +107,8 @@ Not all Bittrex API methods are implemented yet (and may never be), also some co
 ##### sendCustomRequest 
 - url           String
 - callback      Function
-- credentials   Boolean     optional    whether the credentials should be added to the url or not, default is set to false.
+- credentials   Boolean     optional    whether the credentials should be applied to the request/stream or not, default is set to false.
+
 example #1
 ```javascript
 var url = 'https://bittrex.com/api/v1.1/public/getticker?market=BTC-LTC';
@@ -116,11 +117,14 @@ bittrex.sendCustomRequest( uri, function( data ) {
 });
 ```
 
-example #2 (credentials added to request/stream)
+example #2 (credentials applied to request/stream)
 ```javascript
 bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/account/getbalances?currency=BTC', function( data ) {
     console.log( data );
 }, true );
+
+will result in (the Header is being set too):
+https://bittrex.com/api/v1.1/account/getbalances?currency=BTC&apikey=API_KEY&nonce=4456490600
 ```
 
 ##### getticker
