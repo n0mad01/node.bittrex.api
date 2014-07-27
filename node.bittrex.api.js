@@ -18,7 +18,6 @@ var NodeBittrexApi = function() {
 
     var self = this,
         deferred = q.defer(),
-        baseUrl = 'https://bittrex.com/api/v1.1',
         start,
         end,
         request_options = {
@@ -31,6 +30,7 @@ var NodeBittrexApi = function() {
 	    };
 
     this.options = {
+        baseUrl : 'https://bittrex.com/api/v1.1',
         apikey : 'APIKEY',
         apisecret : 'APISECRET',
         verbose : false,
@@ -45,15 +45,8 @@ var NodeBittrexApi = function() {
     var extractOptions = function( options ) {
 
         for( key in options ) {
-
-            switch( key ) {
-
-                case 'apikey' : self[key] = options[key]; break;
-                case 'apisecret' : self[key] = options[key]; break;
-                case 'stream' : self.options[key] = options[key]; break;
-                case 'verbose' : self.options[key] = options[key]; break;
-                case 'cleartext' : self.options[key] = options[key]; break;
-                case 'baseUrl' : self[key] = options[key]; break;
+            if( key in self.options ) {
+                self.options[key] = options[key];
             }
         }
     };
@@ -61,7 +54,7 @@ var NodeBittrexApi = function() {
     var apiCredentials = function( uri ) {
 
         var options = {
-            apikey  : self.apikey,
+            apikey  : self.options.apikey,
             nonce   : getNonce()
         };
 
@@ -73,7 +66,7 @@ var NodeBittrexApi = function() {
         for( key in options ) {
             uri = updateQueryStringParameter( uri, key, options[key] );
         }
-        request_options.headers.apisign = hmac_sha512.HmacSHA512( uri, self.apisecret ); // setting the HMAC hash `apisign` http header
+        request_options.headers.apisign = hmac_sha512.HmacSHA512( uri, self.options.apisecret ); // setting the HMAC hash `apisign` http header
 
         return uri;
     };
@@ -149,52 +142,52 @@ var NodeBittrexApi = function() {
         },
         getmarkets : function( callback ) {
 
-            request_options.uri = baseUrl +'/public/getmarkets';
+            request_options.uri = self.options.baseUrl +'/public/getmarkets';
             sendRequestCallback( callback );
         },
         getcurrencies : function( callback ) {
             
-            request_options.uri = baseUrl +'/public/getcurrencies';
+            request_options.uri = self.options.baseUrl +'/public/getcurrencies';
             sendRequestCallback( callback );
         },
         getticker : function( options, callback ) {
 
-            request_options.uri = setRequestUriGetParams( baseUrl +'/public/getticker', options ); 
+            request_options.uri = setRequestUriGetParams( self.options.baseUrl +'/public/getticker', options ); 
             sendRequestCallback( callback );
         },
         getmarketsummaries : function( callback ) {
 
-            request_options.uri = baseUrl +'/public/getmarketsummaries';
+            request_options.uri = self.options.baseUrl +'/public/getmarketsummaries';
             sendRequestCallback( callback );
         },
         getorderbook : function( options, callback ) {
 
-            request_options.uri = setRequestUriGetParams( baseUrl +'/public/getorderbook', options ); 
+            request_options.uri = setRequestUriGetParams( self.options.baseUrl +'/public/getorderbook', options ); 
             sendRequestCallback( callback );
         },
         getmarkethistory : function( options, callback ) {
 
-            request_options.uri = setRequestUriGetParams( baseUrl +'/public/getmarkethistory', options ); 
+            request_options.uri = setRequestUriGetParams( self.options.baseUrl +'/public/getmarkethistory', options ); 
             sendRequestCallback( callback );
         },
         getbalances : function( callback ) {
 
-            request_options.uri = apiCredentials( baseUrl +'/account/getbalances' );
+            request_options.uri = apiCredentials( self.options.baseUrl +'/account/getbalances' );
             sendRequestCallback( callback );
         },
         getbalance : function( options, callback ) {
 
-            request_options.uri = setRequestUriGetParams( apiCredentials( baseUrl +'/account/getbalances' ), options ); 
+            request_options.uri = setRequestUriGetParams( apiCredentials( self.options.baseUrl +'/account/getbalances' ), options ); 
             sendRequestCallback( callback );
         },
         getwithdrawalhistory : function( options, callback ) {
 
-            request_options.uri = setRequestUriGetParams( apiCredentials( baseUrl +'/account/getwithdrawalhistory' ), options ); 
+            request_options.uri = setRequestUriGetParams( apiCredentials( self.options.baseUrl +'/account/getwithdrawalhistory' ), options ); 
             sendRequestCallback( callback );
         },
         getdepositaddress : function( options, callback ) {
 
-            request_options.uri = setRequestUriGetParams( apiCredentials( baseUrl +'/account/getdepositaddress' ), options ); 
+            request_options.uri = setRequestUriGetParams( apiCredentials( self.options.baseUrl +'/account/getdepositaddress' ), options ); 
             sendRequestCallback( callback );
         }
     };
