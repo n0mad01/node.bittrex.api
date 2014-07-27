@@ -93,7 +93,7 @@ Not all Bittrex API methods are implemented yet (and may never be), also some co
 
 ##### sendCustomRequest
 ```javascript
-var uri = 'https://bittrex.com/api/v1/public/getticker?market=BTC-LTC';
+var url = 'https://bittrex.com/api/v1.1/public/getticker?market=BTC-LTC';
 bittrex.sendCustomRequest( uri, function( data ) {
     console.log( data );
 });
