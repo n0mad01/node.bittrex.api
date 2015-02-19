@@ -96,7 +96,7 @@ var NodeBittrexApi = function() {
                 request( request_options )
                     .pipe( JSONStream.parse() )
                     .pipe( es.mapSync( function( data ) {
-                        callback( data );
+                        callback( undefined, data );
                         ( ( opts.verbose ) 
                             ? console.log( "streamed from "+ request_options.uri +" in: %ds", ( Date.now() - start ) / 1000 ) : '' );
                     }));
@@ -105,7 +105,7 @@ var NodeBittrexApi = function() {
                 sendRequest()
                 .then( function( data ) {
                     
-                    callback( ( ( opts.cleartext ) ? data : JSON.parse( data ) ) );
+                    callback( undefined, ( ( opts.cleartext ) ? data : JSON.parse( data ) ) );
                     ( ( opts.verbose ) 
                         ? console.log( "requested from "+ request_options.uri +" in: %ds", ( Date.now() - start ) / 1000 ) : '' );
                 })
