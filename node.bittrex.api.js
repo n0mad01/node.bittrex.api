@@ -193,6 +193,11 @@ var NodeBittrexApi = function() {
 
             request_options.uri = setRequestUriGetParams( apiCredentials( opts.baseUrl +'/account/getdepositaddress' ), options ); 
             sendRequestCallback( callback );
+        },
+        getdeposithistory : function( options, callback ) {
+
+            request_options.uri = setRequestUriGetParams( apiCredentials( opts.baseUrl +'/account/getdeposithistory' ), options ); 
+            sendRequestCallback( callback );
         }
     };
 
