@@ -176,6 +176,13 @@ bittrex.getdepositaddress({ currency : 'BTC' }, function( data ) {
 });
 ```
 
+##### getdeposithistory
+```javascript
+bittrex.getdeposithistory({ currency : 'BTC' }, function( data ) {
+    console.log( data );
+});
+```
+
 ##### getbalance
 ```javascript
 bittrex.getbalance({ currency : 'BTC' }, function( data ) {
