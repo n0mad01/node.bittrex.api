@@ -164,6 +164,10 @@ var NodeBittrexApi = function() {
             request_options.uri = opts.baseUrl +'/public/getmarketsummaries';
             sendRequestCallback( callback );
         },
+        getmarketsummary : function( options, callback ) {
+          request_options.uri = setRequestUriGetParams( opts.baseUrl +'/public/getmarketsummary', options );
+          sendRequestCallback( callback );
+        },
         getorderbook : function( options, callback ) {
 
             request_options.uri = setRequestUriGetParams( opts.baseUrl +'/public/getorderbook', options ); 
