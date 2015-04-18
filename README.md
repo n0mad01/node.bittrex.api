@@ -155,6 +155,13 @@ bittrex.getmarketsummaries( function( data ) {
 });
 ```
 
+##### getmarketsummary
+```javascript
+bittrex.getmarketsummary( { market : 'BTC-LTC'}, function( data ) {
+    console.log( data );
+});
+```
+
 ##### getorderbook
 ```javascript
 bittrex.getorderbook({ market : 'BTC-LTC', depth : 10, type : 'both' }, function( data ) {
@@ -190,9 +197,6 @@ bittrex.getbalance({ currency : 'BTC' }, function( data ) {
 });
 ```
 
-##### donations very welcome! 
-> BTC
-```bash
-1N5T2VYACYKxK3UUDHhp7g69qtUmsDdAjZ
-```
+##### donations welcome! 
+> BTC: 1N5T2VYACYKxK3UUDHhp7g69qtUmsDdAjZ
 
