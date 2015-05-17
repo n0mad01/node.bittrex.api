@@ -197,6 +197,8 @@ bittrex.getbalance({ currency : 'BTC' }, function( data ) {
 });
 ```
 
+many kudos to https://github.com/samuelhei - thanks to him all missing calls are complemented as also structural improvements have been made
+
 ##### donations welcome! 
 > BTC: 1N5T2VYACYKxK3UUDHhp7g69qtUmsDdAjZ
 

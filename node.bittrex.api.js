@@ -1,9 +1,9 @@
 /* ============================================================
- * node.bittrex.api v0.1.6
+ * node.bittrex.api
  * https://github.com/n0mad01/node.bittrex.api
  *
  * ============================================================
- * Copyright 2014, Adrian Soluch - http://soluch.at/
+ * Copyright 2014-2015, Adrian Soluch - http://soluch.us/
  * Released under the MIT License
  * ============================================================ */
 var NodeBittrexApi = function() {
