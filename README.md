@@ -91,9 +91,8 @@ Other
 
 Other libraries utilized:
 - request https://www.npmjs.org/package/request
-- q https://www.npmjs.org/package/q
 
-For HmacSHA512 this package is using a part of Crypto.js from google because the node crpyt package could not provide any appropriate result.
+For HmacSHA512 this package is using a part of Googles Crypto.js (the node crypt package could not provide any appropriate result).
 - http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha512.js
 
 Methods
@@ -101,8 +100,9 @@ Methods
 
 Optional parameters may have to be looked up at https://bittrex.com/Home/Api.
 
-Not all Bittrex API methods are implemented yet (and may never be), also some could have been forgotten in the documentation ( therefore i recomend you to consult the class code ).
-> Nonetheless the method **sendCustomRequest** enables completely custom requests anyway.
+> It may happen that some Bittrex API methods are missing, also they could have been forgotten in the documentation. In this case, if this strikes you, feel free to open a issue or send me a pull request.
+
+> Also: the method **sendCustomRequest** enables completely custom requests, regardless the specific API methods.
 
 ##### sendCustomRequest 
 - url           String
@@ -143,7 +143,7 @@ bittrex.getbalances( function( data ) {
 
 ##### getmarkethistory
 ```javascript
-bittrex.getmarkethistory({ market : 'BTC-LTC', count : 3 }, function( data ) {
+bittrex.getmarkethistory({ market : 'BTC-LTC' }, function( data ) {
     console.log( data );
 });
 ```
@@ -171,7 +171,7 @@ bittrex.getorderbook({ market : 'BTC-LTC', depth : 10, type : 'both' }, function
 
 ##### getwithdrawalhistory
 ```javascript
-bittrex.getwithdrawalhistory({ currency : 'BTC', count : 1 }, function( data ) {
+bittrex.getwithdrawalhistory({ currency : 'BTC' }, function( data ) {
     console.log( data );
 });
 ```
@@ -197,7 +197,7 @@ bittrex.getbalance({ currency : 'BTC' }, function( data ) {
 });
 ```
 
-many kudos to https://github.com/samuelhei - thanks to him all missing calls are complemented as also structural improvements have been made
+Thanks to all who have contributed to the project, special kudos to https://github.com/samuelhei - thanks to him all missing calls are complemented as also structural improvements have been made.
 
 ##### donations welcome! 
 > BTC: 1N5T2VYACYKxK3UUDHhp7g69qtUmsDdAjZ
