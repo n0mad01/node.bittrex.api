@@ -6,6 +6,18 @@ The Bittrex API data can be received either as a GET request or a Stream.
 
 Documentation to the Bittrex API: https://bittrex.com/Home/Api
 
+This Library was created by  [Adrian Soluch (@n0mad01)](https://github.com/n0mad01/) [soluch.us](http://soluch.us) and is licensed under the [MIT license](https://github.com/n0mad01/node.bittrex.api/blob/master/LICENSE).
+
+Contributors
+----
+Thanks go to the people who have contributed code to this Library.
+
+* [samuelhei](https://github.com/samuelhei) Special kudos - thanks to him all missing calls are complemented as also structural improvements have been made.
+* [192-sean](https://github.com/192-sean)
+* [caffeinewriter](https://github.com/caffeinewriter)
+* [apense](https://github.com/apense)
+
+
 Installation
 ----
 install it most convenient via npm:
@@ -196,8 +208,6 @@ bittrex.getbalance({ currency : 'BTC' }, function( data ) {
     console.log( data );
 });
 ```
-
-Thanks to all who have contributed to the project, special kudos to https://github.com/samuelhei - thanks to him all missing calls are complemented as also structural improvements have been made.
 
 ##### donations welcome! 
 > BTC: 1N5T2VYACYKxK3UUDHhp7g69qtUmsDdAjZ
