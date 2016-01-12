@@ -209,6 +209,13 @@ bittrex.getbalance({ currency : 'BTC' }, function( data ) {
 });
 ```
 
+##### withdraw
+```javascript
+bittrex.withdraw({ currency : 'BTC', quantity : '1.5112', address : 'THE_ADDRESS' }, function( data ) {
+    console.log( data );
+});
+```
+
 ##### donations welcome! 
 > BTC: 1N5T2VYACYKxK3UUDHhp7g69qtUmsDdAjZ
 
