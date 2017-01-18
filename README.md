@@ -217,5 +217,6 @@ bittrex.withdraw({ currency : 'BTC', quantity : '1.5112', address : 'THE_ADDRESS
 ```
 
 ##### donations welcome! 
-> BTC: 1N5T2VYACYKxK3UUDHhp7g69qtUmsDdAjZ
+> BTC: 
+> 17gtixgt4Q8hZcSictQwj5WUdgFjegCt36
 
