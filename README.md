@@ -124,7 +124,7 @@ Optional parameters may have to be looked up at https://bittrex.com/Home/Api.
 example #1
 ```javascript
 var url = 'https://bittrex.com/api/v1.1/public/getticker?market=BTC-LTC';
-bittrex.sendCustomRequest( uri, function( data ) {
+bittrex.sendCustomRequest( url, function( data ) {
     console.log( data );
 });
 ```
