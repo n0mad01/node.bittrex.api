@@ -56,7 +56,7 @@ bittrex.options({
 });
 ```
 
-By default the returned data is an object, in order to get clear text you have to add the option **cleartext** (streams will always return objects):
+By default the returned data is an object, in order to get clear text you have to add the option **cleartext** (streams will always return text):
 ```javascript
 'cleartext' : true
 ```
