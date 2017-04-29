@@ -100,7 +100,7 @@ var NodeBittrexApi = function() {
 
             case true:
                 request(op)
-                    .pipe(JSONStream.parse())
+                    .pipe(JSONStream.parse('*'))
                     .pipe(es.mapSync(function(data) {
                         callback(data);
                         ((opts.verbose) ? console.log("streamed from " + op.uri + " in: %ds", (Date.now() - start) / 1000) : '');
