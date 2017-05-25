@@ -109,7 +109,7 @@ var NodeBittrexApi = function() {
             case false:
                 request(op, function(error, result, body) {
                     if (!body || !result || result.statusCode != 200) {
-                        console.error(error);
+                        callback({error : error, result : result});
                     } else {
                         callback(((opts.cleartext) ? body : JSON.parse(body)));
                         ((opts.verbose) ? console.log("requested from " + result.request.href + " in: %ds", (Date.now() - start) / 1000) : '');
