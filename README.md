@@ -2,7 +2,7 @@ Node Bittrex API
 =========
 
 Node Bittrex API is an asynchronous node.js library for the Bittrex API - https://bittrex.com/.
-The Bittrex API data can be received either as a GET request or via Websockets API (the Stream will no onger be maintained and will be removed in further releases - please switch to Websockets if you want to use real Streams).
+The Bittrex API data can be received either as a GET request or via Websockets API (the Stream option will no longer be maintained and will be removed in further releases - please switch to Websockets if you want to use real Streams).
 
 Documentation to the Bittrex API: https://bittrex.com/Home/Api
 
@@ -12,7 +12,7 @@ Contributors
 ----
 Thanks go to the people who have contributed code to this Library.
 
-* [dparlevliet](https://github.com/dparlevliet) Special kudos - thanks to hom i was able to add the Websocket API
+* [dparlevliet](https://github.com/dparlevliet) Special kudos - thanks to him i was able to add the Websocket API
 * [samuelhei](https://github.com/samuelhei) Special kudos - thanks to him all missing calls are complemented as also structural improvements have been made.
 * [192-sean](https://github.com/192-sean)
 * [caffeinewriter](https://github.com/caffeinewriter)
