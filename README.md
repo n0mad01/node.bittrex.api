@@ -96,7 +96,7 @@ bittrex.websockets.subscribe(['BTC-ETH','BTC-SC','BTC-ZEN'], function(data) {
 });
 ```
 
-Streams **please notice that streams will be removed from future versions**
+Streams - please notice that streams will be removed from future versions
 --
 To activate Streaming simply add to your options:
 ```javascript
