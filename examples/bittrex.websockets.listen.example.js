@@ -1,10 +1,12 @@
 
 const bittrex = require('../node.bittrex.api');
 
-bittrex.websockets.subscribe(['BTC-ETH','BTC-SC','BTC-ZEN'], function(data) {
-  if (data.M === 'updateExchangeState') {
+bittrex.websockets.listen( function( data ) {
+  if (data.M === 'updateSummaryState') {
     data.A.forEach(function(data_for) {
-      console.log('Market Update for '+ data_for.MarketName, data_for);
+      data_for.Deltas.forEach(function(marketsDelta) {
+        console.log('Ticker Update for '+ marketsDelta.MarketName, marketsDelta);
+      });
     });
   }
 });
