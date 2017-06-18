@@ -3,7 +3,7 @@
  * https://github.com/n0mad01/node.bittrex.api
  *
  * ============================================================
- * Copyright 2014-2015, Adrian Soluch - http://soluch.us/
+ * Copyright 2014-2017, Adrian Soluch - http://soluch.us/
  * Released under the MIT License
  * ============================================================ */
 var NodeBittrexApi = function() {
@@ -15,7 +15,8 @@ var NodeBittrexApi = function() {
     JSONStream = require('JSONStream'),
     es = require('event-stream'),
     jsonic = require('jsonic'),
-    signalR = require('signalr-client');
+    signalR = require('signalr-client'),
+    wsclient;
 
   var start,
     request_options = {
@@ -126,19 +127,16 @@ var NodeBittrexApi = function() {
 
   var connectws = function(callback) {
 
-    var client = new signalR.client(
+    wsclient = new signalR.client(
       opts.websockets_baseurl,
       opts.websockets_hubs
     );
-    client.serviceHandlers = {
+    wsclient.serviceHandlers = {
       bound: function() {
         ((opts.verbose) ? console.log('Websocket bound') : '');
       },
       connectFailed: function(error) {
         ((opts.verbose) ? console.log('Websocket connectFailed: ', error) : '');
-      },
-      connected: function(connection) {
-        ((opts.verbose) ? console.log('Websocket connected') : '');
       },
       disconnected: function() {
         ((opts.verbose) ? console.log('Websocket disconnected') : '');
@@ -156,34 +154,59 @@ var NodeBittrexApi = function() {
         ((opts.verbose) ? console.log('Websocket Retrying: ', retry) : '');
         // change to false to stop retrying
         return true;
-      },
-      messageReceived: function (message) {
-        try {
-          var data = jsonic(message.utf8Data);
-          if (data && data.M) {
-            data.M.forEach(function(M) {
-              callback(M);
-            })
-          } else {
-            // ((opts.verbose) ? console.log('Unhandled data', data) : '');
-            callback({'unhandled_data' : data});
-          }
-        } catch (e) {
-          ((opts.verbose) ? console.error(e) : '');
-        }
-        return false; 
       }
     };
-  }
+  };
+
+  var setMessageReceivedWs = function(callback) {
+
+    wsclient.serviceHandlers.messageReceived = function (message) {
+      try {
+        var data = jsonic(message.utf8Data);
+        if (data && data.M) {
+          data.M.forEach(function(M) {
+            callback(M);
+          })
+        } else {
+          // ((opts.verbose) ? console.log('Unhandled data', data) : '');
+          callback({'unhandled_data' : data});
+        }
+      } catch (e) {
+        ((opts.verbose) ? console.error(e) : '');
+      }
+      return false; 
+    }
+  };
+
+  var setConnectedWs = function(markets) {
+    wsclient.serviceHandlers.connected = function(connection) {
+      markets.forEach(function(market) {
+        wsclient.call('CoreHub', 'SubscribeToExchangeDeltas', market).done(function(err, result) {
+          if (result === true) {
+            ((opts.verbose) ? console.log('Subscribed to ' + market) : '');
+          }
+        });
+      });
+      ((opts.verbose) ? console.log('Websocket connected') : '');
+    }
+  };
 
   return {
-    options: function(options) {
+    options : function(options) {
       extractOptions(options);
     },
-    websockets: function(callback) {
-      connectws(callback);
+    websockets : {
+      listen : function(callback) {
+        connectws();
+        setMessageReceivedWs(callback);
+      },
+      subscribe : function(markets, callback) {
+        connectws();
+        setConnectedWs(markets);
+        setMessageReceivedWs(callback);
+      }
     },
-    sendCustomRequest: function(request_string, callback, credentials) {
+    sendCustomRequest : function(request_string, callback, credentials) {
       var op;
 
       if (credentials === true) {
