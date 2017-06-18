@@ -2,7 +2,7 @@ Node Bittrex API
 =========
 
 Node Bittrex API is an asynchronous node.js library for the Bittrex API - https://bittrex.com/.
-The Bittrex API data can be received either as a GET request or via Websockets (Stream will be removed in further releases).
+The Bittrex API data can be received either as a GET request or via Websockets API (the Stream will no onger be maintained and will be removed in further releases - please switch to Websockets if you want to use real Streams).
 
 Documentation to the Bittrex API: https://bittrex.com/Home/Api
 
@@ -70,8 +70,7 @@ The baseUrl itself can also be set via options
 Websockets
 --
 following methods are implemented:
-> websockets.listen
-> websockets.subscribe
+> websockets.listen, websockets.subscribe
 
 listen example
 ```javascript
@@ -86,7 +85,7 @@ bittrex.websockets.listen( function( data ) {
 });
 ```
 
-subscribe
+subscribe example
 ```javascript
 bittrex.websockets.subscribe(['BTC-ETH','BTC-SC','BTC-ZEN'], function(data) {
   if (data.M === 'updateExchangeState') {
@@ -161,7 +160,7 @@ example #1
 ```javascript
 var url = 'https://bittrex.com/api/v1.1/public/getticker?market=BTC-LTC';
 bittrex.sendCustomRequest( url, function( data ) {
-    console.log( data );
+  console.log( data );
 });
 ```
 
