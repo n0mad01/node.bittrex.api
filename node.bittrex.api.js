@@ -156,6 +156,7 @@ var NodeBittrexApi = function() {
         return true;
       }
     };
+    return wsclient;
   };
 
   var setMessageReceivedWs = function(callback) {
@@ -196,14 +197,19 @@ var NodeBittrexApi = function() {
       extractOptions(options);
     },
     websockets : {
+      client : function(callback) {
+        return connectws();
+      },
       listen : function(callback) {
-        connectws();
+        var client = connectws();
         setMessageReceivedWs(callback);
+        return client;
       },
       subscribe : function(markets, callback) {
-        connectws();
+        var client = connectws();
         setConnectedWs(markets);
         setMessageReceivedWs(callback);
+        return client;
       }
     },
     sendCustomRequest : function(request_string, callback, credentials) {

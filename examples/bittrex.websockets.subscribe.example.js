@@ -5,7 +5,7 @@ bittrex.options({
   'verbose' : true, 
 });
 
-bittrex.websockets.subscribe(['BTC-ETH','BTC-SC','BTC-ZEN'], function(data) {
+const websocketsclient = bittrex.websockets.subscribe(['BTC-ETH','BTC-SC','BTC-ZEN'], function(data) {
   if (data.M === 'updateExchangeState') {
     data.A.forEach(function(data_for) {
       console.log('Market Update for '+ data_for.MarketName, data_for);
