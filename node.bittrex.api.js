@@ -258,16 +258,8 @@ var NodeBittrexApi = function() {
       var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/market/buylimit'), options);
       sendRequestCallback(callback, op);
     },
-    buymarket: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/market/buymarket'), options);
-      sendRequestCallback(callback, op);
-    },
     selllimit: function(options, callback) {
       var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/market/selllimit'), options);
-      sendRequestCallback(callback, op);
-    },
-    sellmarket: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/market/sellmarket'), options);
       sendRequestCallback(callback, op);
     },
     cancel: function(options, callback) {
