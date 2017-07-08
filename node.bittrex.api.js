@@ -152,8 +152,8 @@ var NodeBittrexApi = function() {
       },
       reconnecting: function (retry) {
         ((opts.verbose) ? console.log('Websocket Retrying: ', retry) : '');
-        // change to false to stop retrying
-        return true;
+        // change to true to stop retrying
+        return false;
       }
     };
     return wsclient;
