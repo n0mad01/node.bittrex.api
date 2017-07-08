@@ -103,6 +103,10 @@ var websocketsclient = bittrex.websockets.client();
 websocketsclient.serviceHandlers.reconnecting = function (message) {
   return true; // set to true stops reconnect/retrying
 }
+
+websocketsclient.serviceHandlers.messageReceived = function (message) {
+  console.log(message); // the messages received must be parsed as json first e.g. via jsonic(message.utf8Data)
+}
 ```
 
 all possible serviceHandlers
