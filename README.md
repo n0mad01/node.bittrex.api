@@ -74,7 +74,7 @@ following methods are implemented:
 
 listen example
 ```javascript
-bittrex.websockets.listen( function( data ) {
+var websocketsclient = bittrex.websockets.listen( function( data ) {
   if (data.M === 'updateSummaryState') {
     data.A.forEach(function(data_for) {
       data_for.Deltas.forEach(function(marketsDelta) {
@@ -87,13 +87,39 @@ bittrex.websockets.listen( function( data ) {
 
 subscribe example
 ```javascript
-bittrex.websockets.subscribe(['BTC-ETH','BTC-SC','BTC-ZEN'], function(data) {
+var websocketsclient = bittrex.websockets.subscribe(['BTC-ETH','BTC-SC','BTC-ZEN'], function(data) {
   if (data.M === 'updateExchangeState') {
     data.A.forEach(function(data_for) {
       console.log('Market Update for '+ data_for.MarketName, data_for);
     });
   }
 });
+```
+
+simple client & redefine serviceHandlers example
+```javascript
+var websocketsclient = bittrex.websockets.client();
+
+websocketsclient.serviceHandlers.reconnecting = function (message) {
+  return true; // set to true stops reconnect/retrying
+}
+```
+
+all possible serviceHandlers
+```javascript
+bound: function() { console.log("Websocket bound"); },
+connectFailed: function(error) { console.log("Websocket connectFailed: ", error); },
+connected: function(connection) { console.log("Websocket connected"); },
+disconnected: function() { console.log("Websocket disconnected"); },
+onerror: function (error) { console.log("Websocket onerror: ", error); },
+messageReceived: function (message) { console.log("Websocket messageReceived: ", message); return false; },
+bindingError: function (error) { console.log("Websocket bindingError: ", error); },
+connectionLost: function (error) { console.log("Connection Lost: ", error); },
+reconnecting: function (retry { inital: true/false, count: 0} ) {
+  console.log("Websocket Retrying: ", retry);
+  //return retry.count >= 3; // cancel retry true
+  return true;
+}
 ```
 
 Streams - please notice that streams will be removed from future versions
