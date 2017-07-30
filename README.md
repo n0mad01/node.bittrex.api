@@ -19,27 +19,44 @@ Thanks go to the people who have contributed code to this Library.
 * [apense](https://github.com/apense)
 
 
-Installation
+Quick start
 ----
-install it most convenient via npm:
 ```sh
 $ npm install node.bittrex.api
 ```
 
-##### or
+```javascript
+var bittrex = require('node.bittrex.api');
+bittrex.options({
+  'apikey' : API_KEY,
+  'apisecret' : API_SECRET, 
+});
+bittrex.getmarketsummaries( function( data, err ) {
+  if (err) {
+    return console.error(err);
+  }
+  for( var i in data.result ) {
+    bittrex.getticker( { market : data.result[i].MarketName }, function( ticker ) {
+      console.log( ticker );
+    });
+  }
+});
+```
+
+
+Advanced start
+----
 
 fetch the project via git:
 ```sh
 $ git clone https://github.com/n0mad01/node.bittrex.api.git
 ```
+
 then meet the package dependencies:
 ```sh
 $ cd node-bittrex-api/
 $ npm install
 ```
-
-First steps
-----
 
 include node.bittrex.api.js into your project:
 ```javascript
@@ -64,8 +81,10 @@ By default the returned data is an object, in order to get clear text you have t
 
 The baseUrl itself can also be set via options
 ```javascript
-'baseUrl' : 'https://bittrex.com/api/v1'
+'baseUrl' : 'https://bittrex.com/api/v1',
+'baseUrlv2' : 'https://bittrex.com/Api/v2',
 ```
+
 
 Websockets
 --
@@ -126,6 +145,7 @@ reconnecting: function (retry { inital: true/false, count: 0} ) {
 }
 ```
 
+
 Streams - please notice that streams will be removed from future versions
 --
 To activate Streaming simply add to your options:
@@ -133,12 +153,16 @@ To activate Streaming simply add to your options:
 'stream' : true
 ```
 
+
 Examples
 --
 After configuration you can use the object right away:
 example #1
 ```javascript
-bittrex.getmarketsummaries( function( data ) {
+bittrex.getmarketsummaries( function( data, err ) {
+  if (err) {
+    return console.error(err);
+  }
   for( var i in data.result ) {
     bittrex.getticker( { market : data.result[i].MarketName }, function( ticker ) {
       console.log( ticker );
@@ -149,7 +173,10 @@ bittrex.getmarketsummaries( function( data ) {
 
 example #2
 ```javascript
-bittrex.getbalance({ currency : 'BTC' }, function( data ) {
+bittrex.getbalance({ currency : 'BTC' }, function( data, err ) {
+  if (err) {
+    return console.error(err);
+  }
   console.log( data );
 });
 ```
@@ -172,6 +199,83 @@ Other libraries utilized:
 For HmacSHA512 this package is using a part of Googles Crypto.js (the node crypt package could not provide any appropriate result).
 - http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha512.js
 
+
+Error examples
+---
+
+Example of request/domain based errors (not Bittrex API error)
+```javascript
+var url = 'http://fake.bittrex.com/api/v1.1/public/getticker?market=USDT-BTCXXX';
+bittrex.sendCustomRequest( url, function( data, err ) {
+  if (err) {
+    /**
+      { 
+        success: false,
+        message: 'URL request error',
+        error: 
+         { Error: getaddrinfo ENOTFOUND fake.bittrex.com fake.bittrex.com:80
+             at errnoException (dns.js:28:10)
+             at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:76:26)
+           code: 'ENOTFOUND',
+           errno: 'ENOTFOUND',
+           syscall: 'getaddrinfo',
+           hostname: 'fake.bittrex.com',
+           host: 'fake.bittrex.com',
+           port: 80 },
+        result: undefined
+      }
+    */
+    return console.error(err);
+  }
+  console.log(data);
+});
+```
+
+Example of request/url based errors (not Bittrex API error)
+```javascript
+var url = 'http://bittrex.com/api/v1.1/public/getfakeendpoint';
+bittrex.sendCustomRequest( url, function( data, err ) {
+  if (err) {
+    /**
+      { 
+        success: false,
+        message: 'URL request error',
+        error: undefined,
+        result: {
+          statusCode: 404,
+          statusMessage: 'Not Found',
+          body: '<!DOCTYPE html>\r\n<html > ...'
+        }
+      }
+    */
+    return console.error(err);
+  }
+  console.log(data);
+});
+```
+
+Example of Bittrex API error
+```javascript
+bittrex.getcandles({
+  marketName: 'USDT-BTC',
+  tickInterval: 300,
+  _: ((new Date()).getTime()/1000)-(300*5) // start timestamp
+}, function(data, err) {
+  if (err) {
+    /**
+      {
+        success: false,
+        message: 'INVALID_TICK_INTERVAL',
+        result: null 
+      }
+    */
+    return console.error(err);
+  }
+  console.log(data);
+});
+```
+
+
 Methods
 ----
 
@@ -189,14 +293,14 @@ Optional parameters may have to be looked up at https://bittrex.com/Home/Api.
 example #1
 ```javascript
 var url = 'https://bittrex.com/api/v1.1/public/getticker?market=BTC-LTC';
-bittrex.sendCustomRequest( url, function( data ) {
+bittrex.sendCustomRequest( url, function( data, err ) {
   console.log( data );
 });
 ```
 
 example #2 (credentials applied to request/stream)
 ```javascript
-bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/account/getbalances?currency=BTC', function( data ) {
+bittrex.sendCustomRequest( 'https://bittrex.com/api/v1.1/account/getbalances?currency=BTC', function( data, err ) {
   console.log( data );
 }, true );
 
@@ -206,82 +310,126 @@ https://bittrex.com/api/v1.1/account/getbalances?currency=BTC&apikey=API_KEY&non
 
 ##### getticker
 ```javascript
-bittrex.getticker( { market : 'BTC-LTC' }, function( data ) {
+bittrex.getticker( { market : 'BTC-LTC' }, function( data, err ) {
   console.log( data );
 });
 ```
 
 ##### getbalances
 ```javascript
-bittrex.getbalances( function( data ) {
+bittrex.getbalances( function( data, err ) {
   console.log( data );
 });
 ```
 
 ##### getmarkethistory
 ```javascript
-bittrex.getmarkethistory({ market : 'BTC-LTC' }, function( data ) {
+bittrex.getmarkethistory({ market : 'BTC-LTC' }, function( data, err ) {
+  console.log( data );
+});
+```
+
+##### getcandles (v2 method)
+```javascript
+bittrex.getmarkethistory({
+  marketName: 'USDT-BTC',
+  tickInterval: 'fiveMin', // intervals are keywords
+  _: ((new Date()).getTime()/1000)-(300*5) // start timestamp
+}, function( data, err ) {
   console.log( data );
 });
 ```
 
 ##### getmarketsummaries
 ```javascript
-bittrex.getmarketsummaries( function( data ) {
+bittrex.getmarketsummaries( function( data, err ) {
   console.log( data );
 });
 ```
 
 ##### getmarketsummary
 ```javascript
-bittrex.getmarketsummary( { market : 'BTC-LTC'}, function( data ) {
+bittrex.getmarketsummary( { market : 'BTC-LTC'}, function( data, err ) {
   console.log( data );
 });
 ```
 
 ##### getorderbook
 ```javascript
-bittrex.getorderbook({ market : 'BTC-LTC', depth : 10, type : 'both' }, function( data ) {
+bittrex.getorderbook({ market : 'BTC-LTC', depth : 10, type : 'both' }, function( data, err ) {
   console.log( data );
 });
 ```
 
 ##### getwithdrawalhistory
 ```javascript
-bittrex.getwithdrawalhistory({ currency : 'BTC' }, function( data ) {
+bittrex.getwithdrawalhistory({ currency : 'BTC' }, function( data, err ) {
   console.log( data );
 });
 ```
 
 ##### getdepositaddress
 ```javascript
-bittrex.getdepositaddress({ currency : 'BTC' }, function( data ) {
+bittrex.getdepositaddress({ currency : 'BTC' }, function( data, err ) {
   console.log( data );
 });
 ```
 
 ##### getdeposithistory
 ```javascript
-bittrex.getdeposithistory({ currency : 'BTC' }, function( data ) {
+bittrex.getdeposithistory({ currency : 'BTC' }, function( data, err ) {
   console.log( data );
 });
 ```
 
 ##### getbalance
 ```javascript
-bittrex.getbalance({ currency : 'BTC' }, function( data ) {
+bittrex.getbalance({ currency : 'BTC' }, function( data, err ) {
   console.log( data );
 });
 ```
 
 ##### withdraw
 ```javascript
-bittrex.withdraw({ currency : 'BTC', quantity : '1.5112', address : 'THE_ADDRESS' }, function( data ) {
+bittrex.withdraw({ currency : 'BTC', quantity : '1.5112', address : 'THE_ADDRESS' }, function( data, err ) {
   console.log( data );
 });
 ```
 
-##### donations welcome! 
+
+Testing
+----
+
+Installing test gear
+```bash
+npm install --only=dev
+```
+
+Running all tests
+```bash
+npm test tests
+```
+
+or individually
+```bash
+npm test tests/public.js
+npm test tests/private.js
+```
+
+##### Testing private methods
+
+Testing private method endpoints requires an api key/secret which should be 
+installed in to ``tests/config.json`` - you will find an example file in 
+``tests/config_example.json``.
+
+```bash
+cp tests/tests_example.json tests/config.json
+vim tests/config.json
+```
+
+
+Donations welcome! 
+---
+
 BTC
 > 17gtixgt4Q8hZcSictQwj5WUdgFjegCt36
-
