@@ -33,6 +33,9 @@
   },
   "homepage": "https://github.com/n0mad01/node.bittrex.api",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "mocha": "^3.3.0"
   }
 }

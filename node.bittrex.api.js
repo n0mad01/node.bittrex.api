@@ -30,6 +30,7 @@ var NodeBittrexApi = function() {
 
   var opts = {
     baseUrl: 'https://bittrex.com/api/v1.1',
+    baseUrlv2: 'https://bittrex.com/Api/v2.0',
     websockets_baseurl: 'wss://socket.bittrex.com/signalr',
     websockets_hubs: ['CoreHub'],
     apikey: 'APIKEY',
@@ -44,7 +45,6 @@ var NodeBittrexApi = function() {
   };
 
   var extractOptions = function(options) {
-
     var o = Object.keys(options),
       i;
     for (i = 0; i < o.length; i++) {
@@ -53,7 +53,6 @@ var NodeBittrexApi = function() {
   };
 
   var apiCredentials = function(uri) {
-
     var options = {
       apikey: opts.apikey,
       nonce: getNonce()
@@ -63,7 +62,6 @@ var NodeBittrexApi = function() {
   };
 
   var setRequestUriGetParams = function(uri, options) {
-
     var op;
     if (typeof(uri) === 'object') {
       op = uri;
@@ -86,21 +84,19 @@ var NodeBittrexApi = function() {
   };
 
   var updateQueryStringParameter = function(uri, key, value) {
+    var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+    var separator = uri.indexOf('?') !== -1 ? "&" : "?";
 
-      var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
-      var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+    if (uri.match(re)) {
+      uri = uri.replace(re, '$1' + key + "=" + value + '$2');
+    } else {
+      uri = uri + separator + key + "=" + value;
+    }
 
-      if (uri.match(re)) {
-          uri = uri.replace(re, '$1' + key + "=" + value + '$2');
-      } else {
-          uri = uri + separator + key + "=" + value;
-      }
-
-      return uri;
+    return uri;
   };
 
   var sendRequestCallback = function(callback, op) {
-
     start = Date.now();
 
     switch (opts.stream) {
@@ -115,9 +111,19 @@ var NodeBittrexApi = function() {
       case false:
         request(op, function(error, result, body) {
           if (!body || !result || result.statusCode != 200) {
-            callback({error : error, result : result});
+            callback(null, {
+              success: false,
+              message: 'URL request error',
+              error: error,
+              result: result,
+            });
           } else {
-            callback(((opts.cleartext) ? body : JSON.parse(body)));
+            result = JSON.parse(body);
+            if (!result.success) {
+              // error returned by bittrex API - forward the result as an error
+              return callback(null, result);
+            }
+            callback(((opts.cleartext) ? body : result));
             ((opts.verbose) ? console.log("requested from " + result.request.href + " in: %ds", (Date.now() - start) / 1000) : '');
           }
         });
@@ -125,8 +131,22 @@ var NodeBittrexApi = function() {
     }
   };
 
-  var connectws = function(callback) {
+  var publicApiCall = function(url, callback, options) {
+    var op = request_options;
+    if (!options) {
+      op.uri = url;
+    }
+    sendRequestCallback(callback, (!options) ? op : setRequestUriGetParams(url, options));
+  };
 
+  var credentialApiCall = function(url, callback, options) {
+    if (options) {
+      options = setRequestUriGetParams(apiCredentials(url), options);
+    }
+    sendRequestCallback(callback, options);
+  };
+
+  var connectws = function(callback) {
     wsclient = new signalR.client(
       opts.websockets_baseurl,
       opts.websockets_hubs
@@ -141,16 +161,16 @@ var NodeBittrexApi = function() {
       disconnected: function() {
         ((opts.verbose) ? console.log('Websocket disconnected') : '');
       },
-      onerror: function (error) {
+      onerror: function(error) {
         ((opts.verbose) ? console.log('Websocket onerror: ', error) : '');
       },
-      bindingError: function (error) {
+      bindingError: function(error) {
         ((opts.verbose) ? console.log('Websocket bindingError: ', error) : '');
       },
-      connectionLost: function (error) {
+      connectionLost: function(error) {
         ((opts.verbose) ? console.log('Connection Lost: ', error) : '');
       },
-      reconnecting: function (retry) {
+      reconnecting: function(retry) {
         ((opts.verbose) ? console.log('Websocket Retrying: ', retry) : '');
         // change to true to stop retrying
         return false;
@@ -160,14 +180,13 @@ var NodeBittrexApi = function() {
   };
 
   var setMessageReceivedWs = function(callback) {
-
-    wsclient.serviceHandlers.messageReceived = function (message) {
+    wsclient.serviceHandlers.messageReceived = function(message) {
       try {
         var data = jsonic(message.utf8Data);
         if (data && data.M) {
           data.M.forEach(function(M) {
             callback(M);
-          })
+          });
         } else {
           // ((opts.verbose) ? console.log('Unhandled data', data) : '');
           callback({'unhandled_data' : data});
@@ -175,44 +194,48 @@ var NodeBittrexApi = function() {
       } catch (e) {
         ((opts.verbose) ? console.error(e) : '');
       }
-      return false; 
-    }
+      return false;
+    };
   };
 
   var setConnectedWs = function(markets) {
     wsclient.serviceHandlers.connected = function(connection) {
       markets.forEach(function(market) {
         wsclient.call('CoreHub', 'SubscribeToExchangeDeltas', market).done(function(err, result) {
+          if (err) {
+            return console.error(err);
+          }
+
           if (result === true) {
             ((opts.verbose) ? console.log('Subscribed to ' + market) : '');
           }
         });
       });
       ((opts.verbose) ? console.log('Websocket connected') : '');
-    }
+    };
   };
 
   return {
-    options : function(options) {
+    options: function(options) {
       extractOptions(options);
     },
-    websockets : {
-      client : function(callback) {
+    websockets: {
+      client: function(callback) {
         return connectws();
       },
-      listen : function(callback) {
+      listen: function(callback) {
         var client = connectws();
         setMessageReceivedWs(callback);
         return client;
       },
-      subscribe : function(markets, callback) {
+      subscribe: function(markets, callback) {
         var client = connectws();
         setConnectedWs(markets);
         setMessageReceivedWs(callback);
         return client;
       }
     },
-    sendCustomRequest : function(request_string, callback, credentials) {
+    sendCustomRequest: function(request_string, callback, credentials) {
       var op;
 
       if (credentials === true) {
@@ -224,83 +247,70 @@ var NodeBittrexApi = function() {
       sendRequestCallback(callback, op);
     },
     getmarkets: function(callback) {
-      var op = request_options;
-      op.uri = opts.baseUrl + '/public/getmarkets';
-      sendRequestCallback(callback, op);
+      publicApiCall(opts.baseUrl + '/public/getmarkets', callback, null);
     },
     getcurrencies: function(callback) {
-      var op = request_options;
-      op.uri = opts.baseUrl + '/public/getcurrencies';
-      sendRequestCallback(callback, op);
+      publicApiCall(opts.baseUrl + '/public/getcurrencies', callback, null);
     },
     getticker: function(options, callback) {
-      var op = setRequestUriGetParams(opts.baseUrl + '/public/getticker', options);
-      sendRequestCallback(callback, op);
+      publicApiCall(opts.baseUrl + '/public/getticker', callback, options);
     },
     getmarketsummaries: function(callback) {
-      var op = request_options;
-      op.uri = opts.baseUrl + '/public/getmarketsummaries';
-      sendRequestCallback(callback, op);
+      publicApiCall(opts.baseUrl + '/public/getmarketsummaries', callback, null);
     },
     getmarketsummary: function(options, callback) {
-      var op = setRequestUriGetParams(opts.baseUrl + '/public/getmarketsummary', options);
-      sendRequestCallback(callback, op);
+      publicApiCall(opts.baseUrl + '/public/getmarketsummary', callback, options);
     },
     getorderbook: function(options, callback) {
-      var op = setRequestUriGetParams(opts.baseUrl + '/public/getorderbook', options);
-      sendRequestCallback(callback, op);
+      publicApiCall(opts.baseUrl + '/public/getorderbook', callback, options);
     },
     getmarkethistory: function(options, callback) {
-      var op = setRequestUriGetParams(opts.baseUrl + '/public/getmarkethistory', options);
-      sendRequestCallback(callback, op);
+      publicApiCall(opts.baseUrl + '/public/getmarkethistory', callback, options);
+    },
+    getcandles: function(options, callback) {
+      publicApiCall(opts.baseUrlv2 + '/pub/market/GetTicks', callback, options);
     },
     buylimit: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/market/buylimit'), options);
-      sendRequestCallback(callback, op);
+      credentialApiCall(opts.baseUrl + '/market/buylimit', callback, options);
+    },
+    buymarket: function(options, callback) {
+      credentialApiCall(opts.baseUrl + '/market/buymarket', callback, options);
     },
     selllimit: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/market/selllimit'), options);
-      sendRequestCallback(callback, op);
+      credentialApiCall(opts.baseUrl + '/market/selllimit', callback, options);
+    },
+    sellmarket: function(options, callback) {
+      credentialApiCall(opts.baseUrl + '/market/sellmarket', callback, options);
     },
     cancel: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/market/cancel'), options);
-      sendRequestCallback(callback, op);
+      credentialApiCall(opts.baseUrl + '/market/cancel', callback, options);
     },
     getopenorders: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/market/getopenorders'), options);
-      sendRequestCallback(callback, op);
+      credentialApiCall(opts.baseUrl + '/market/getopenorders', callback, options);
     },
     getbalances: function(callback) {
-      var op = apiCredentials(opts.baseUrl + '/account/getbalances');
-      sendRequestCallback(callback, op);
+      credentialApiCall(opts.baseUrl + '/account/getbalances', callback, {});
     },
     getbalance: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/account/getbalance'), options);
-      sendRequestCallback(callback, op);
+      credentialApiCall(opts.baseUrl + '/account/getbalance', callback, options);
     },
     getwithdrawalhistory: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/account/getwithdrawalhistory'), options);
-      sendRequestCallback(callback, op);
+      credentialApiCall(opts.baseUrl + '/account/getwithdrawalhistory', callback, options);
     },
     getdepositaddress: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/account/getdepositaddress'), options);
-      sendRequestCallback(callback, op);
+      credentialApiCall(opts.baseUrl + '/account/getdepositaddress', callback, options);
     },
     getdeposithistory: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/account/getdeposithistory'), options);
-      sendRequestCallback(callback, op);
+      credentialApiCall(opts.baseUrl + '/account/getdeposithistory', callback, options);
     },
     getorderhistory: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/account/getorderhistory'), options);
-      sendRequestCallback(callback, op);
+      credentialApiCall(opts.baseUrl + '/account/getorderhistory', callback, options);
     },
     getorder: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/account/getorder'), options);
-      sendRequestCallback(callback, op);
+      credentialApiCall(opts.baseUrl + '/account/getorder', callback, options);
     },
     withdraw: function(options, callback) {
-      var op = setRequestUriGetParams(apiCredentials(opts.baseUrl + '/account/withdraw'), options);
-      sendRequestCallback(callback, op);
+      credentialApiCall(opts.baseUrl + '/account/withdraw', callback, options);
     }
   };
 }();
