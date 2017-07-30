@@ -111,7 +111,7 @@ var NodeBittrexApi = function() {
       case false:
         request(op, function(error, result, body) {
           if (!body || !result || result.statusCode != 200) {
-            callback(null, {
+            return callback(null, {
               success: false,
               message: 'URL request error',
               error: error,
@@ -123,8 +123,8 @@ var NodeBittrexApi = function() {
               // error returned by bittrex API - forward the result as an error
               return callback(null, result);
             }
-            callback(((opts.cleartext) ? body : result));
-            ((opts.verbose) ? console.log("requested from " + result.request.href + " in: %ds", (Date.now() - start) / 1000) : '');
+            return callback(((opts.cleartext) ? body : result));
+            ((opts.verbose) ? console.log("requested from " + op.uri + " in: %ds", (Date.now() - start) / 1000) : '');
           }
         });
         break;
