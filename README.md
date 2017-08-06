@@ -89,14 +89,14 @@ Change the callbacks arguments sequence
 ```javascript
 'inverse_callback_arguments' : true,
 ```
-This simply changes the sequence in which the arguments are passed, instead of:
+This simply changes the sequence in which the arguments are passed, instead of e.g.:
 ```javascript
 getmarkethistory({market : 'USDT-BTC'}, function(data, error) {});
-you'll get the reverse order:
+```
+you'll get the reversed order:
+```javascript
 getmarkethistory({market : 'USDT-BTC'}, function(error, data) {});
 ```
-
-
 
 Websockets
 --
