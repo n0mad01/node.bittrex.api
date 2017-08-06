@@ -85,6 +85,18 @@ The baseUrl itself can also be set via options
 'baseUrlv2' : 'https://bittrex.com/Api/v2',
 ```
 
+Change the callbacks arguments sequence
+```javascript
+'inverse_callback_arguments' : true,
+```
+This simply changes the sequence in which the arguments are passed, instead of:
+```javascript
+getmarkethistory({market : 'USDT-BTC'}, function(data, error) {});
+you'll get the reverse order:
+getmarkethistory({market : 'USDT-BTC'}, function(error, data) {});
+```
+
+
 
 Websockets
 --

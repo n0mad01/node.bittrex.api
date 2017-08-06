@@ -38,6 +38,7 @@ var NodeBittrexApi = function() {
     verbose: false,
     cleartext: false,
     stream: false,
+    inverse_callback_arguments: false,
   };
 
   var getNonce = function() {
@@ -110,21 +111,28 @@ var NodeBittrexApi = function() {
         break;
       case false:
         request(op, function(error, result, body) {
+          ((opts.verbose) ? console.log("requested from " + op.uri + " in: %ds", (Date.now() - start) / 1000) : '');
           if (!body || !result || result.statusCode != 200) {
-            return callback(null, {
+            var errorObj = {
               success: false,
               message: 'URL request error',
               error: error,
               result: result,
-            });
+            };
+            return ((opts.inverse_callback_arguments) ? 
+              callback(errorObj, null) :
+              callback(null, errorObj));
           } else {
             result = JSON.parse(body);
             if (!result.success) {
               // error returned by bittrex API - forward the result as an error
-              return callback(null, result);
+              return ((opts.inverse_callback_arguments) ? 
+                callback(result, null) :
+                callback(null, result));
             }
-            return callback(((opts.cleartext) ? body : result));
-            ((opts.verbose) ? console.log("requested from " + op.uri + " in: %ds", (Date.now() - start) / 1000) : '');
+            return ((opts.inverse_callback_arguments) ? 
+              callback(null, ((opts.cleartext) ? body : result)) : 
+              callback(((opts.cleartext) ? body : result), null));
           }
         });
         break;
