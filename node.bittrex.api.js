@@ -312,7 +312,7 @@ var NodeBittrexApi = function() {
       credentialApiCall(opts.baseUrl + '/account/getdeposithistory', callback, options);
     },
     getorderhistory: function(options, callback) {
-      credentialApiCall(opts.baseUrl + '/account/getorderhistory', callback, options);
+      credentialApiCall(opts.baseUrl + '/account/getorderhistory', callback, options || {});
     },
     getorder: function(options, callback) {
       credentialApiCall(opts.baseUrl + '/account/getorder', callback, options);
