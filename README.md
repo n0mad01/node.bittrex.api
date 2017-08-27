@@ -30,7 +30,7 @@ Here is a small checklist you should go through before you start:
     1. READ INFO - Allows you to read private details such as open orders, order history, balances, etc
     2. TRADE LIMIT - Allows you to create/cancel trade limit buy/sell orders
     3. TRADE MARKET - allows you to create/cancel market buy/sell orders
-    4. WITHDRAW - Allows you to withdraw to another address (this is the one they used)
+    4. WITHDRAW - Allows you to withdraw to another address
 3. Make use of the Bittrex IP Whitelist as also the Withdrawal Whitelist features
 4. Do not ever commit your API Keys to GitHub or expose them under any circumstances!
 
