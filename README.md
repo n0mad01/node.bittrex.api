@@ -24,10 +24,9 @@ This is just a quick reminder that you are handling with this library coins (and
 
 Here is a small checklist you should go through before you start:
 
-1. Make sure you don't give your api key more rights as absolutely necessary
+1. Make sure you don't give your api key more rights as absolutely necessary - for testing READ INFO alone should be enough!
     ![bittrex_ap_keys_control](https://user-images.githubusercontent.com/260321/29748739-a6c2c00e-8b1c-11e7-95ec-1b0221348235.png)
-    for testing READ INFO alone should be enough!
-2 make sure to understand the API Key permissions
+2. make sure to understand the API Key permissions
     1. READ INFO - Allows you to read private details such as open orders, order history, balances, etc
     2. TRADE LIMIT - Allows you to create/cancel trade limit buy/sell orders
     3. TRADE MARKET - allows you to create/cancel market buy/sell orders
