@@ -270,8 +270,7 @@ Example of Bittrex API error
 ```javascript
 bittrex.getcandles({
   marketName: 'USDT-BTC',
-  tickInterval: 300,
-  _: ((new Date()).getTime()/1000)-(300*5) // start timestamp
+  tickInterval: 300
 }, function(data, err) {
   if (err) {
     /**
@@ -346,7 +345,6 @@ bittrex.getmarkethistory({ market : 'BTC-LTC' }, function( data, err ) {
 bittrex.getcandles({
   marketName: 'USDT-BTC',
   tickInterval: 'fiveMin', // intervals are keywords
-  _: ((new Date()).getTime()/1000)-(300*5) // start timestamp
 }, function( data, err ) {
   console.log( data );
 });
