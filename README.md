@@ -343,7 +343,7 @@ bittrex.getmarkethistory({ market : 'BTC-LTC' }, function( data, err ) {
 
 ##### getcandles (v2 method)
 ```javascript
-bittrex.getmarkethistory({
+bittrex.getcandles({
   marketName: 'USDT-BTC',
   tickInterval: 'fiveMin', // intervals are keywords
   _: ((new Date()).getTime()/1000)-(300*5) // start timestamp
