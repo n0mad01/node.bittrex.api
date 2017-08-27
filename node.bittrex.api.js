@@ -11,6 +11,7 @@ var NodeBittrexApi = function() {
   'use strict';
 
   var request = require('request'),
+    assign = require('object-assign'),
     hmac_sha512 = require('./hmac-sha512.js'),
     JSONStream = require('JSONStream'),
     es = require('event-stream'),
@@ -18,15 +19,14 @@ var NodeBittrexApi = function() {
     signalR = require('signalr-client'),
     wsclient;
 
-  var start,
-    request_options = {
-      method: 'GET',
-      agent: false,
-      headers: {
-        'User-Agent': 'Mozilla/4.0 (compatible; Node Bittrex API)',
-        'Content-type': 'application/x-www-form-urlencoded'
-      }
-    };
+  var default_request_options = {
+    method: 'GET',
+    agent: false,
+    headers: {
+      'User-Agent': 'Mozilla/4.0 (compatible; Node Bittrex API)',
+      'Content-type': 'application/x-www-form-urlencoded'
+    }
+  };
 
   var opts = {
     baseUrl: 'https://bittrex.com/api/v1.1',
@@ -68,7 +68,7 @@ var NodeBittrexApi = function() {
       op = uri;
       uri = op.uri;
     } else {
-      op = request_options;
+      op = assign({}, default_request_options);
     }
 
 
@@ -98,7 +98,7 @@ var NodeBittrexApi = function() {
   };
 
   var sendRequestCallback = function(callback, op) {
-    start = Date.now();
+    var start = Date.now();
 
     switch (opts.stream) {
       case true:
@@ -119,19 +119,19 @@ var NodeBittrexApi = function() {
               error: error,
               result: result,
             };
-            return ((opts.inverse_callback_arguments) ? 
+            return ((opts.inverse_callback_arguments) ?
               callback(errorObj, null) :
               callback(null, errorObj));
           } else {
             result = JSON.parse(body);
             if (!result.success) {
               // error returned by bittrex API - forward the result as an error
-              return ((opts.inverse_callback_arguments) ? 
+              return ((opts.inverse_callback_arguments) ?
                 callback(result, null) :
                 callback(null, result));
             }
-            return ((opts.inverse_callback_arguments) ? 
-              callback(null, ((opts.cleartext) ? body : result)) : 
+            return ((opts.inverse_callback_arguments) ?
+              callback(null, ((opts.cleartext) ? body : result)) :
               callback(((opts.cleartext) ? body : result), null));
           }
         });
@@ -140,7 +140,7 @@ var NodeBittrexApi = function() {
   };
 
   var publicApiCall = function(url, callback, options) {
-    var op = request_options;
+    var op = assign({}, default_request_options);
     if (!options) {
       op.uri = url;
     }
@@ -249,8 +249,7 @@ var NodeBittrexApi = function() {
       if (credentials === true) {
         op = apiCredentials(request_string);
       } else {
-        op = request_options;
-        op.uri = request_string;
+        op = assign({}, default_request_options, { uri: request_string });
       }
       sendRequestCallback(callback, op);
     },
