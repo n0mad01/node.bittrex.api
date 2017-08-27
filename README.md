@@ -14,6 +14,7 @@ Thanks go to the people who have contributed code to this Library.
 
 * [dparlevliet](https://github.com/dparlevliet) Special kudos - thanks to him i was able to add the Websocket API, also did he added the error object/handling param and the getcandles method for the Bittrex API V2
 * [samuelhei](https://github.com/samuelhei) Special kudos - thanks to him all missing calls are complemented as also structural improvements have been made.
+* [mhuggins](https://github.com/mhuggins)
 * [192-sean](https://github.com/192-sean)
 * [caffeinewriter](https://github.com/caffeinewriter)
 * [apense](https://github.com/apense)
