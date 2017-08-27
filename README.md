@@ -24,7 +24,7 @@ This is just a quick reminder that you are handling with this library coins (and
 
 Here is a small checklist you should go through before you start:
 
-1. Make sure you don't give your api key more rights as absolutely necessary - for testing READ INFO alone should be enough!      
+1. Make sure you don't give your api key more rights as absolutely necessary - for testing READ INFO alone should be enough! (bittrex.com under: Settings/API Keys)
 ![bittrex_ap_keys_control](https://user-images.githubusercontent.com/260321/29748739-a6c2c00e-8b1c-11e7-95ec-1b0221348235.png)
 2. make sure to understand the API Key permissions
     1. READ INFO - Allows you to read private details such as open orders, order history, balances, etc
