@@ -18,6 +18,22 @@ Thanks go to the people who have contributed code to this Library.
 * [caffeinewriter](https://github.com/caffeinewriter)
 * [apense](https://github.com/apense)
 
+Before you start
+----
+This is just a quick reminder that you are handling with this library coins (and thus with real money), so, understand the situation as much as possible and make everything to prevent losing them.
+
+Here is a small checklist you should go through before you start:
+
+1. Make sure you don't give your api key more rights as absolutely necessary
+    ![bittrex_ap_keys_control](https://user-images.githubusercontent.com/260321/29748739-a6c2c00e-8b1c-11e7-95ec-1b0221348235.png)
+    for testing READ INFO alone should be enough!
+2 make sure to understand the API Key permissions
+    1. READ INFO - Allows you to read private details such as open orders, order history, balances, etc
+    2. TRADE LIMIT - Allows you to create/cancel trade limit buy/sell orders
+    3. TRADE MARKET - allows you to create/cancel market buy/sell orders
+    4. WITHDRAW - Allows you to withdraw to another address (this is the one they used)
+3. Make use of the Bittrex IP Whitelist as also the Withdrawal Whitelist features
+4. Do not ever commit your API Keys to GitHub or expose them under any circumstances!
 
 Quick start
 ----
