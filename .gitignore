@@ -3,4 +3,3 @@ node_modules/
 *.log
 *.log.*
 tests/config.json
-package-lock.json
