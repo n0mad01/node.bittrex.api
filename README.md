@@ -5,3 +5,4 @@
 >
 > Thanks to diligent @dparlevliet there is a legacy to this library
 > https://github.com/dparlevliet/node.bittrex.api
+
