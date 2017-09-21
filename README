@@ -360,7 +360,7 @@ bittrex.getmarkethistory({ market : 'BTC-LTC' }, function( data, err ) {
 ```javascript
 bittrex.getcandles({
   marketName: 'USDT-BTC',
-  tickInterval: 'fiveMin', // intervals are keywords (oneMin, fiveMin, thirtyMin, Day)
+  tickInterval: 'fiveMin', // intervals are keywords (oneMin, fiveMin, hour, thirtyMin, Day)
 }, function( data, err ) {
   console.log( data );
 });
