@@ -45,7 +45,7 @@ $ npm install node.bittrex.api
 var bittrex = require('node.bittrex.api');
 bittrex.options({
   'apikey' : API_KEY,
-  'apisecret' : API_SECRET, 
+  'apisecret' : API_SECRET,
 });
 bittrex.getmarketsummaries( function( data, err ) {
   if (err) {
@@ -83,10 +83,10 @@ var bittrex = require('./node.bittrex.api.js');
 ```javascript
 bittrex.options({
   'apikey' : API_KEY,
-  'apisecret' : API_SECRET, 
+  'apisecret' : API_SECRET,
   'stream' : true, // will be removed from future versions
   'verbose' : true,
-  'cleartext' : false 
+  'cleartext' : false
 });
 ```
 
@@ -237,10 +237,10 @@ var url = 'http://fake.bittrex.com/api/v1.1/public/getticker?market=USDT-BTCXXX'
 bittrex.sendCustomRequest( url, function( data, err ) {
   if (err) {
     /**
-      { 
+      {
         success: false,
         message: 'URL request error',
-        error: 
+        error:
          { Error: getaddrinfo ENOTFOUND fake.bittrex.com fake.bittrex.com:80
              at errnoException (dns.js:28:10)
              at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:76:26)
@@ -265,7 +265,7 @@ var url = 'http://bittrex.com/api/v1.1/public/getfakeendpoint';
 bittrex.sendCustomRequest( url, function( data, err ) {
   if (err) {
     /**
-      { 
+      {
         success: false,
         message: 'URL request error',
         error: undefined,
@@ -293,7 +293,7 @@ bittrex.getcandles({
       {
         success: false,
         message: 'INVALID_TICK_INTERVAL',
-        result: null 
+        result: null
       }
     */
     return console.error(err);
@@ -312,7 +312,7 @@ Optional parameters may have to be looked up at https://bittrex.com/Home/Api.
 
 > Also: the method **sendCustomRequest** enables completely custom requests, regardless the specific API methods.
 
-##### sendCustomRequest 
+##### sendCustomRequest
 - url           String
 - callback      Function
 - credentials   Boolean     optional    whether the credentials should be applied to the request/stream or not, default is set to false.
@@ -360,12 +360,11 @@ bittrex.getmarkethistory({ market : 'BTC-LTC' }, function( data, err ) {
 ```javascript
 bittrex.getcandles({
   marketName: 'USDT-BTC',
-  tickInterval: 'fiveMin', // intervals are keywords
+  tickInterval: 'fiveMin', // intervals are keywords (oneMin, fiveMin, hour, thirtyMin, Day)
 }, function( data, err ) {
   console.log( data );
 });
 ```
-
 ##### getmarketsummaries
 ```javascript
 bittrex.getmarketsummaries( function( data, err ) {
@@ -444,8 +443,8 @@ npm test tests/private.js
 
 ##### Testing private methods
 
-Testing private method endpoints requires an api key/secret which should be 
-installed in to ``tests/config.json`` - you will find an example file in 
+Testing private method endpoints requires an api key/secret which should be
+installed in to ``tests/config.json`` - you will find an example file in
 ``tests/config_example.json``.
 
 ```bash
@@ -454,7 +453,7 @@ vim tests/config.json
 ```
 
 
-Donations welcome! 
+Donations welcome!
 ---
 
 BTC
